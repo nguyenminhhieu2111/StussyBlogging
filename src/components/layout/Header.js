@@ -1,7 +1,12 @@
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import { debounce } from 'lodash';
 import React from 'react';
-import { NavLink } from "react-router-dom";
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { NavLink, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAuth } from '../../contexts/auth-context';
+import { db } from '../../firebase-app/firebase-config';
 import Logo from '../../image/Logo';
 import Button from '../button/Button';
 const menuLinks = [
@@ -103,6 +108,41 @@ function getLastName(name) {
 }
 const Header = () => {
   const {userInfo}=useAuth()
+    const navigate = useNavigate();
+    const [filter,setFilter]=useState('')
+    const [postList,setPostList]=useState([])
+    const SearchBox=debounce((e)=>{
+      setFilter(e.target.value)
+    },200)
+
+useEffect(()=>{
+   async function fetchData(){
+    const colRef=collection(db,"posts")
+    const newRef= query(
+      colRef,
+      where("title", ">=", filter),
+      where("title", "<=", filter + "utf8")
+    );
+    if(filter){
+      onSnapshot(newRef,(snapShot)=>{
+        let result=[];
+        snapShot.forEach((doc)=>{
+          result.push({
+            id:doc.id,
+            ...doc.data()
+          })
+        })
+        setPostList(result)
+      })
+    }else{
+      const results=[]
+      setPostList(results)
+    }
+   
+   };
+   fetchData()
+},[filter])
+  
 
     return (
         <HeaderStyles>
@@ -120,11 +160,12 @@ const Header = () => {
               </li>
             ))}
           </ul>
-          <div className="search">
+          <div className="relative search">
             <input
               type="text"
               className="search-input"
               placeholder="Search posts..."
+              onChange={SearchBox}
             />
             <span className="search-icon">
               <svg
@@ -156,7 +197,20 @@ const Header = () => {
                 />
               </svg>
             </span>
+            <div className="absolute left-0 w-full bg-gray-300 rounded top-14">
+            {postList.map((post)=>{
+              return(
+                
+                <div className="flex gap-20 p-2 mt-2 hover:bg-[#F50B60] cursor-pointer" onClick={()=> navigate(`/${post.slug}`)}>
+                <img className="w-40" src={post.image} alt="" />
+                <span className="flex items-center">{post.title}</span>
+              </div>
+
+              )             
+            })}
           </div>
+          </div>
+          
           {!userInfo ? 
             <Button type={"button"} style={{maxWidth:"200px"}} height="56px" className="header-button" to="/sign-in">
             Sign Up

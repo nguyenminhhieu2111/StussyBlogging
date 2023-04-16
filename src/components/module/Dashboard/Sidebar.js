@@ -3,7 +3,6 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import { auth } from "../../../firebase-app/firebase-config";
-import logoStussy from "../../../image/SeekPng.com_stussy-logo-png_3225091.png"
 const SidebarStyles = styled.div`
   width: 300px;
   background: #ffffff;
@@ -162,10 +161,14 @@ const sidebarLinks = [
 const Sidebar = () => {
   return (
     <SidebarStyles className="sidebar">
-        {sidebarLinks.map((link) => {
-     
+      {sidebarLinks.map((link) => {
         return (
-          <NavLink to={link.url} className="menu-item"  onClick={link?.onClick} key={link.title}>
+          <NavLink
+            to={link.url}
+            className="menu-item"
+            onClick={link?.onClick}
+            key={link.title}
+          >
             <span className="menu-icon">{link.icon}</span>
             <span className="menu-text">{link.title}</span>
           </NavLink>

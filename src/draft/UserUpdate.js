@@ -36,7 +36,6 @@ const UserUpdate = () => {
     const watchRole = watch("role");
     const imageUrl = getValues("avatar");
     const imageRegex = /%2F(\S+)\?/gm.exec(imageUrl);
-    console.log(imageRegex)
     const imageName = imageRegex?.length > 0 ? imageRegex[1] : "";
     const { image, setImage, progress, handleSelectImage, handleDeleteImage } =
       useFireBaseImage(setValue, getValues, imageName, deleteAvatar);
@@ -55,7 +54,6 @@ const UserUpdate = () => {
         });
         toast.success("Update user information successfully!");
       } catch (error) {
-        console.log(error);
         toast.error("Update user failed!");
       }
     };
@@ -143,6 +141,7 @@ const UserUpdate = () => {
                   control={control}
                   checked={Number(watchStatus) === userStatus.ACTIVE}
                   value={userStatus.ACTIVE}
+                  disabled={userInfo?.role !== userRole.ADMIN}
                 >
                   Active
                 </Radio>
@@ -151,6 +150,7 @@ const UserUpdate = () => {
                   control={control}
                   checked={Number(watchStatus) === userStatus.PENDING}
                   value={userStatus.PENDING}
+                  disabled={userInfo?.role !== userRole.ADMIN}
                 >
                   Pending
                 </Radio>
@@ -159,6 +159,7 @@ const UserUpdate = () => {
                   control={control}
                   checked={Number(watchStatus) === userStatus.BAN}
                   value={userStatus.BAN}
+                  disabled={userInfo?.role !== userRole.ADMIN}
                 >
                   Banned
                 </Radio>
@@ -172,6 +173,7 @@ const UserUpdate = () => {
                   control={control}
                   checked={Number(watchRole) === userRole.ADMIN}
                   value={userRole.ADMIN}
+                  disabled={userInfo?.role !== userRole.ADMIN}
                 >
                   Admin
                 </Radio>
@@ -180,6 +182,7 @@ const UserUpdate = () => {
                   control={control}
                   checked={Number(watchRole) === userRole.MOD}
                   value={userRole.MOD}
+                  disabled={userInfo?.role !== userRole.ADMIN}
                 >
                   Moderator
                 </Radio>
@@ -188,18 +191,14 @@ const UserUpdate = () => {
                   control={control}
                   checked={Number(watchRole) === userRole.USER}
                   value={userRole.USER}
+                  disabled={userInfo?.role !== userRole.ADMIN}
                 >
                   User
                 </Radio>
               </FieldCheckboxes>
             </Field>
           </div>
-          <div className="form-layout">
-            <Field>
-              <Label>Description</Label>
-              <Textarea name="description" control={control}></Textarea>
-            </Field>
-          </div>
+          
           <Button
             kind="primary"
             type="submit"

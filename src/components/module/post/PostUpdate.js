@@ -50,10 +50,6 @@ const PostUpdate = () => {
     const { image, setImage, progress, handleSelectImage, handleDeleteImage } =
       useFireBaseImage(setValue, getValues, imageName, deletePostImage);
     async function deletePostImage() {
-      if (userInfo?.role !== userRole.ADMIN) {
-        Swal.fire("Failed", "You have no right to do this action", "warning");
-        return;
-      }
       const colRef = doc(db, "users", postId);
       await updateDoc(colRef, {
         avatar: "",
@@ -108,10 +104,6 @@ const PostUpdate = () => {
     };
     const updatePostHandler = async (values) => {
       if (!isValid) return;
-      /* if (userInfo?.role !== userRole.ADMIN) {
-        Swal.fire("Failed", "You have no right to do this action", "warning");
-        return;
-      } */
       const docRef = doc(db, "posts", postId);
       values.status = Number(values.status);
       values.slug = slugify(values.slug || values.title, { lower: true });
@@ -240,6 +232,7 @@ const PostUpdate = () => {
             <Field>
               <Label>Status</Label>
               <FieldCheckboxes>
+              {userInfo.role == userRole.ADMIN ? 
                 <Radio
                   name="status"
                   control={control}
@@ -247,7 +240,9 @@ const PostUpdate = () => {
                   value={postStatus.APPROVED}
                 >
                   Approved
-                </Radio>
+                </Radio>: ""
+              }
+              
                 <Radio
                   name="status"
                   control={control}
@@ -256,14 +251,18 @@ const PostUpdate = () => {
                 >
                   Pending
                 </Radio>
-                <Radio
+                {
+                  userInfo.role == userRole.ADMIN ?
+                  <Radio
                   name="status"
                   control={control}
                   checked={Number(watchStatus) === postStatus.REJECTED}
                   value={postStatus.REJECTED}
                 >
                   Reject
-                </Radio>
+                </Radio>:""
+                }
+                
               </FieldCheckboxes>
             </Field>
           </div>

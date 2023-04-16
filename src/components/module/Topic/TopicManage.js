@@ -1,11 +1,12 @@
-import { async } from '@firebase/util';
+import error from "../../../image/R.jpg"
 import { collection, deleteDoc, doc, onSnapshot, query, startAfter } from 'firebase/firestore';
 import React from 'react';
 import { useEffect,useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { useAuth } from '../../../contexts/auth-context';
 import { db } from '../../../firebase-app/firebase-config';
-import { postStatus } from '../../../utils/constants';
+import { postStatus, userRole } from '../../../utils/constants';
 import { ActionDelete, ActionEdit } from '../../action';
 import Button from '../../button/Button';
 import { LabelStatus } from '../../label';
@@ -13,6 +14,7 @@ import { Table } from '../../table';
 import DashboardHeading from '../Dashboard/DashBoardHeading';
 
 const TopicManage = () => {
+  const {userInfo}=useAuth()
     const [topicList,setTopicList]=useState([])
     useEffect(()=>{
    const colref=collection(db,"topic")
@@ -50,6 +52,16 @@ const TopicManage = () => {
           }
         })
       }
+
+    if(userInfo.role !== userRole.ADMIN){
+    return(
+      <div>
+      <span className="title_error">Sorry, you don't have permission</span>
+      <img src={error}/>
+      </div>
+    )  
+  
+    }  
     return (
         <div>
             <DashboardHeading

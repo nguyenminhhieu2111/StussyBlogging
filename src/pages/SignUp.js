@@ -75,7 +75,7 @@ const SignUp = () => {
 
         })
       }
-    })
+    },[errors])
     return (
         <SignUpPageStyles>
         <AuthenticationPage>
@@ -96,7 +96,7 @@ const SignUp = () => {
                   <Label htmlFor="password" >password</Label>
                  <InputPasswordToggle control={control}></InputPasswordToggle>         
               </Field>
-              <div className='have-acc'>You already have an account? <NavLink to={"/sign-in"}>Login</NavLink></div>
+              <div className='have-acc'>You already have an account? <NavLink className="text-green-400 underline" to={"/sign-in"}>Login</NavLink></div>
               <Button type="submit"
             style={{
               maxWidth: 300,

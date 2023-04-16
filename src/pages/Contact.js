@@ -56,38 +56,31 @@ const Contact = () => {
       createdAt: new Date()
     }
   });
-  const handleSendPost = async(values) => {
+  const [topic, setTopic] = useState("");
+  const [selectTopic, setSelectTopic] = useState("");
+  const [loading,setLoading]=useState(false)
+  const handleSendPost = async (values) => {
+    console.log("dsdsd")
    if(!isValid) return;
     setLoading(true)
-    const cloneValues={...values}
-    const colRef=collection(db,"support");
     try {
+      console.log("sasssa")
+      const cloneValues={...values}
+      const colRef=collection(db,"support");
       await addDoc(colRef,{
         ...cloneValues,
         createAt:serverTimestamp()
       })
-      toast.success("Create new post succesfully")
+      toast.success("send support succesfully")
+      console.log(cloneValues)
       
     } catch (error) {
       setLoading(false)
       toast.error("error message")
       
     }
-    finally{
-      setLoading(false)
-      reset({
-        name:"",
-        email:"",
-        phoneNumber:"",
-        topic:"",
-        comment:"",
-        createdAt: new Date(),
-        })
-    }
+
   };
-  const [topic, setTopic] = useState("");
-  const [selectTopic, setSelectTopic] = useState("");
-  const [loading,setLoading]=useState(false)
   useEffect(() => {
     document.title = "Stussy Blogging-Update Topic";
     const colref = collection(db, "topic");
@@ -100,7 +93,6 @@ const Contact = () => {
         });
       });
       setTopic(results);
-      console.log("sasas", results);
     });
   }, []);
 
@@ -120,7 +112,7 @@ const Contact = () => {
       <div className="container">
         <div className="MainContact">
           <h1>CONTACT</h1>
-          <form onSubmit={handleSubmit(handleSendPost)} autoComplete="off">
+          <form onSubmit={handleSubmit(handleSendPost)}>
             <Field>
               <Label htmlFor="name">Name (required)</Label>
               <Input
@@ -182,8 +174,8 @@ const Contact = () => {
                 margin: "0 auto",
               }}
               kind="primary"
-              isLoading={loading}
-              disabled={loading}
+              isLoading={isSubmitting}
+              disabled={isSubmitting}
             >
               Send
             </Button>

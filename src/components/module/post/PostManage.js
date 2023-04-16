@@ -1,16 +1,26 @@
-import { collection, deleteDoc, doc, getDocs, limit, onSnapshot, query, startAfter, where } from 'firebase/firestore';
-import { debounce } from 'lodash';
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2';
-import { useAuth } from '../../../contexts/auth-context';
-import { db } from '../../../firebase-app/firebase-config';
-import { postStatus, userRole } from '../../../utils/constants';
-import { ActionDelete, ActionEdit, ActionView } from '../../action';
-import Button from '../../button/Button';
-import { LabelStatus } from '../../label';
-import { Pagination } from '../../pagination';
-import { Table } from '../../table';
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  limit,
+  onSnapshot,
+  query,
+  startAfter,
+  where,
+} from "firebase/firestore";
+import { debounce } from "lodash";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import { useAuth } from "../../../contexts/auth-context";
+import { db } from "../../../firebase-app/firebase-config";
+import { postStatus, userRole } from "../../../utils/constants";
+import { ActionDelete, ActionEdit, ActionView } from "../../action";
+import Button from "../../button/Button";
+import { LabelStatus } from "../../label";
+import { Pagination } from "../../pagination";
+import { Table } from "../../table";
 const POST_PER_PAGE = 10;
 const PostManage = () => {
   const [postList, setPostList] = useState([]);
@@ -35,17 +45,31 @@ const PostManage = () => {
       onSnapshot(colRef, (snapshot) => {
         setTotal(snapshot.size);
       });
-
-      onSnapshot(newRef, (snapshot) => {
-        let results = [];
-        snapshot.forEach((doc) => {
-          results.push({
-            id: doc.id,
-            ...doc.data(),
+      if (userInfo.role == userRole.ADMIN) {
+        onSnapshot(newRef, (snapshot) => {
+          let results = [];
+          snapshot.forEach((doc) => {
+            results.push({
+              id: doc.id,
+              ...doc.data(),
+            });
           });
+          setPostList(results);
         });
-        setPostList(results);
-      });
+      } else {
+        const q = query(
+          colRef,
+          where("user.fullname", "==", userInfo.fullname)
+        );
+        onSnapshot(q, (snapshot) => {
+          let results = [];
+          snapshot.forEach((doc) => {
+            results.push({ id: doc.id, ...doc.data() });
+          });
+          setPostList(results);
+        });
+      }
+
       setLastDoc(lastVisible);
     }
     fetchData();
@@ -108,32 +132,32 @@ const PostManage = () => {
     setLastDoc(lastVisible);
   };
 
-    return (
-        <div>
-          <h1 className="dashboard-heading">Manage post</h1>
-          <div className="flex justify-end mb-10">
-            <div className="w-full max-w-[300px]">
-              <input
-                type="text"
-                className="w-full p-4 border border-gray-300 border-solid rounded-lg"
-                placeholder="Search post..."
-                onChange={handleSearchPost}
-              />
-            </div>
-          </div>
-          <Table>
-            <thead>
-              <tr>
-                <th></th>
-                <th>Id</th>
-                <th>Category</th>
-                <th>Author</th>
-                <th>Post</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-            {postList.length > 0 &&
+  return (
+    <div>
+      <h1 className="dashboard-heading">Manage post</h1>
+      <div className="flex justify-end mb-10">
+        <div className="w-full max-w-[300px]">
+          <input
+            type="text"
+            className="w-full p-4 border border-gray-300 border-solid rounded-lg"
+            placeholder="Search post..."
+            onChange={handleSearchPost}
+          />
+        </div>
+      </div>
+      <Table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Id</th>
+            <th>Category</th>
+            <th>Author</th>
+            <th>Post</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {postList.length > 0 &&
             postList.map((post) => {
               const date = post?.createdAt?.seconds
                 ? new Date(post?.createdAt?.seconds * 1000)
@@ -183,9 +207,9 @@ const PostManage = () => {
                 </tr>
               );
             })}
-            </tbody>
-          </Table>
-          {total > postList.length && (
+        </tbody>
+      </Table>
+      {total > postList.length && (
         <div className="mt-10 text-center">
           <Button className="mx-auto w-[200px]" onClick={handleLoadMorePost}>
             Load more
@@ -193,11 +217,11 @@ const PostManage = () => {
         </div>
       )}
 
-          <div className="mt-10">
-            <Pagination></Pagination>
-          </div>
-        </div>
-      );
+      <div className="mt-10">
+        <Pagination></Pagination>
+      </div>
+    </div>
+  );
 };
 
 export default PostManage;

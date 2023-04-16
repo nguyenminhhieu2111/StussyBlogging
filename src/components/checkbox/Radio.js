@@ -1,7 +1,7 @@
 import React from "react";
 import { useController } from "react-hook-form";
 
-const Radio = ({ checked, children, control, name, ...rest }) => {
+const Radio = ({ checked, children, control,disabled, name, ...rest }) => {
   const { field } = useController({
     control,
     name,
@@ -15,6 +15,7 @@ const Radio = ({ checked, children, control, name, ...rest }) => {
         className="hidden-input"
         {...field}
         {...rest}
+        disabled={disabled}
       />
       <div className="flex items-center font-medium cursor-pointer gap-x-3">
         <div

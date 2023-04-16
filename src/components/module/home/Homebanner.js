@@ -59,7 +59,7 @@ const Homebanner = () => {
                 <div className="banner">
                     <div className="banner_content">
                           <h1 className='banner-heading'>Stussy Blogging</h1>
-                          <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Modi possimus, commodi natus consequuntur maiores, similique voluptatibus, ipsum esse alias perferendis magnam nobis eius quis ea laborum voluptates veritatis saepe exercitationem!</p>
+                          <p>This is a blog for everyone to share useful articles about technology related to programming. We hope that it will help me and you to facilitate work and study. Let's join hands. create a strong technology community.</p>
                         <Button pinker="secondary" to="/sign-up" style={{marginTop:"20px"}}>Get started</Button>
                     </div>
                     <div className="banner_image">

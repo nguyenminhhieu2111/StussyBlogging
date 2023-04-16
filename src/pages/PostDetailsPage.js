@@ -62,15 +62,15 @@ const PostDetailsPageStyles = styled.div`
     }
   }
   .author {
-    margin-bottom: 80px;
     display: flex;
     border-radius: 20px;
+    border:1px solid gray;
     @media(max-width:450px){
         margin-bottom: 0;
       }
     &-image {
-      width: 200px;
-      height: 200px;
+      width: 100px;
+      height: 100px;
       flex-shrink: 0;
       border-radius: inherit;
       @media (max-width:450px) {
@@ -93,12 +93,12 @@ const PostDetailsPageStyles = styled.div`
       text-transform: uppercase;
       font-family: 'stussy';
       letter-spacing: 10px;
-      margin-top: 50px;
-      font-size: 20px;
+      margin-top: 15px;
+      font-size: 14px;
       @media (max-width:450px) {
         text-align: center;
         margin-top: 0;
-        font-size: 15px;
+        font-size: 12px;
       }
     }
     &-desc {
